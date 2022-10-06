@@ -1,5 +1,6 @@
-import Koa from "koa";
-const app = new Koa();
-app.listen(8080, () => {
+const app = require("./app");
+const config = require("./app/config");
+
+app.listen(config.APP_PORT, () => {
   console.log("koa server start");
 });

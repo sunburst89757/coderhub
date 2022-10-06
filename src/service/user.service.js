@@ -6,7 +6,7 @@ class UserService {
     return res[0];
   }
   async getUserByUsername(username) {
-    const statement = `SELECT username FROM users WHERE username = ?`;
+    const statement = `SELECT username,password FROM users WHERE username = ?`;
     const result = await connection.execute(statement, [username]);
     return result[0];
   }

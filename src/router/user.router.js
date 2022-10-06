@@ -6,5 +6,5 @@ const {
 } = require("../middleware/user.middleware");
 const userRouter = new Router({ prefix: "/user" });
 //  注册前要校验 要加密
-userRouter.post("/register", verifyUser, encryptPassword, register);
+userRouter.post("/register", verifyUser, encryptPassword, register); 
 module.exports = userRouter;

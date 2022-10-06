@@ -1,6 +1,7 @@
 const {
   USERNAME_OR_PASSWORD_IS_NOT_EMPTY,
   USERNAME_ALREADY_EXISTS,
+  PASSWORD_IS_NOT_CORRECT,
 } = require("../constants/errorTypes");
 const errorHandle = (error, ctx) => {
   let status;
@@ -16,6 +17,11 @@ const errorHandle = (error, ctx) => {
       //   接口冲突
       status = 409;
       message = "该用户名已经被占用了，请更换一个";
+      break;
+    }
+    case PASSWORD_IS_NOT_CORRECT: {
+      status = 400;
+      message = "密码错误";
       break;
     }
     default: {

@@ -1,7 +1,10 @@
 const Router = require("koa-router");
 const { register } = require("../controller/user.controller");
-const { verifyUser } = require("../middleware/user.middleware");
+const {
+  verifyUser,
+  encryptPassword,
+} = require("../middleware/user.middleware");
 const userRouter = new Router({ prefix: "/user" });
-//  校验用户注册中间件
-userRouter.post("/register", verifyUser, register);
+//  注册前要校验 要加密
+userRouter.post("/register", verifyUser, encryptPassword, register);
 module.exports = userRouter;

@@ -2,7 +2,7 @@ const {
   USERNAME_OR_PASSWORD_IS_NOT_EMPTY,
   USERNAME_ALREADY_EXISTS,
 } = require("../constants/errorTypes");
-
+const { md5Password } = require("../utils/handlePassword");
 const service = require("../service/user.service");
 async function verifyUser(ctx, next) {
   // 1. 获取用户请求数据
@@ -20,7 +20,12 @@ async function verifyUser(ctx, next) {
   }
   await next();
 }
-
+const encryptPassword = async (ctx, next) => {
+  const { password } = ctx.request.body;
+  ctx.request.body.password = md5Password(password);
+  await next();
+};
 module.exports = {
   verifyUser,
+  encryptPassword,
 };

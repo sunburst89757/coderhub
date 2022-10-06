@@ -4,9 +4,7 @@ class UserController {
   async register(ctx, next) {
     // 1.获取用户请求数据
     // 2.数据库操作
-    const user = await service.register(ctx.request.body);
-    console.log(user, "userInfo");
-
+    await service.register(ctx.request.body);
     // 3.接口返回
     ctx.body = "register success";
   }

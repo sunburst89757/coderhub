@@ -3,6 +3,7 @@ const {
   USERNAME_ALREADY_EXISTS,
   PASSWORD_IS_NOT_CORRECT,
   UNAUTHORIZATION,
+  USER_DOES_NOT_EXITS,
 } = require("../constants/errorTypes");
 const errorHandle = (error, ctx) => {
   let status;
@@ -28,6 +29,11 @@ const errorHandle = (error, ctx) => {
     case UNAUTHORIZATION: {
       status = 401;
       message = "账号未授权";
+      break;
+    }
+    case USER_DOES_NOT_EXITS: {
+      status = 400;
+      message = "用户不存在请先注册";
       break;
     }
     default: {

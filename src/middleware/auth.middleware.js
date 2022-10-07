@@ -4,6 +4,7 @@ const {
   USERNAME_OR_PASSWORD_IS_NOT_EMPTY,
   PASSWORD_IS_NOT_CORRECT,
   UNAUTHORIZATION,
+  USER_DOES_NOT_EXITS,
 } = require("../constants/errorTypes");
 const { getUserByUsername } = require("../service/user.service");
 const { md5Password } = require("../utils/handlePassword");
@@ -17,6 +18,11 @@ const verifyLogin = async (ctx, next) => {
   }
   // 3.验证密码是否正确
   const res = await getUserByUsername(username);
+  // 验证用户名是否存在
+  if (!res.length) {
+    const error = new Error(USER_DOES_NOT_EXITS);
+    return ctx.app.emit("error", error, ctx);
+  }
   if (res[0].password !== md5Password(password)) {
     const error = new Error(PASSWORD_IS_NOT_CORRECT);
     // 必须return 函数才能停止

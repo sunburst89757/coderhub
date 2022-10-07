@@ -13,8 +13,5 @@ class AuthController {
       token,
     };
   }
-  async test(ctx, next) {
-    ctx.body = "授权成功";
-  }
 }
 module.exports = new AuthController();

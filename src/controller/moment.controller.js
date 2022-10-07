@@ -12,6 +12,11 @@ class MomentController {
     const res = await service.getMomentsByUserId(userId);
     ctx.body = res;
   }
+  async deleteOneMoment(ctx, next) {
+    const { userId, momentId } = ctx.request.body;
+    await service.deleteMoment(userId, momentId);
+    ctx.body = "删除成功";
+  }
 }
 
 module.exports = new MomentController();

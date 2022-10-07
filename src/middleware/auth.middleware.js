@@ -31,11 +31,15 @@ const verifyAuth = async (ctx, next) => {
   const token = authorization.replace("Bearer ", "");
   try {
     // 验证成功
-    jwt.verify(token, PUBLIC_KEY, {
+    const res = jwt.verify(token, PUBLIC_KEY, {
       algorithms: ["RS256"],
     });
+    // 验证登录成功后给后续中间件ctx加上userId
+    ctx.userId = res.userId;
     await next();
   } catch (error) {
+    console.log(error);
+
     //  验证失败会有异常
     const err = new Error(UNAUTHORIZATION);
     ctx.app.emit("error", err, ctx);

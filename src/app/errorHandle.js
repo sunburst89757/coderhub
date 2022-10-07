@@ -2,6 +2,7 @@ const {
   USERNAME_OR_PASSWORD_IS_NOT_EMPTY,
   USERNAME_ALREADY_EXISTS,
   PASSWORD_IS_NOT_CORRECT,
+  UNAUTHORIZATION,
 } = require("../constants/errorTypes");
 const errorHandle = (error, ctx) => {
   let status;
@@ -22,6 +23,11 @@ const errorHandle = (error, ctx) => {
     case PASSWORD_IS_NOT_CORRECT: {
       status = 400;
       message = "密码错误";
+      break;
+    }
+    case UNAUTHORIZATION: {
+      status = 401;
+      message = "账号未授权";
       break;
     }
     default: {

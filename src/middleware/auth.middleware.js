@@ -6,7 +6,7 @@ const {
   UNAUTHORIZATION,
   USER_DOES_NOT_EXITS,
 } = require("../constants/errorTypes");
-const { getUserByUsername } = require("../service/user.service");
+const service = require("../service/user.service");
 const { md5Password } = require("../utils/handlePassword");
 const verifyLogin = async (ctx, next) => {
   // 1. 获取用户请求数据
@@ -17,7 +17,7 @@ const verifyLogin = async (ctx, next) => {
     return ctx.app.emit("error", error, ctx);
   }
   // 3.验证密码是否正确
-  const res = await getUserByUsername(username);
+  const res = await service.getUserByUsername(username);
   // 验证用户名是否存在
   if (!res.length) {
     const error = new Error(USER_DOES_NOT_EXITS);
@@ -51,19 +51,8 @@ const verifyAuth = async (ctx, next) => {
     ctx.app.emit("error", err, ctx);
   }
 };
-const verifySelf = async (ctx, next) => {
-  const { userId } = ctx.request.body;
-  console.log(ctx.userId);
-  console.log(userId);
-  if (userId !== ctx.userId) {
-    console.log("执行");
-    ctx.body = "删除失败 只有本人才可以删除本条动态";
-  } else {
-    await next();
-  }
-};
+
 module.exports = {
   verifyLogin,
   verifyAuth,
-  verifySelf,
 };

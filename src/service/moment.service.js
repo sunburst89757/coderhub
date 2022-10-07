@@ -11,9 +11,19 @@ class MomentService {
     const result = await connection.execute(statement, [userId]);
     return result[0];
   }
-  async deleteMoment(userId, momentId) {
-    const statement = `DELETE FROM moments WHERE id=? AND userId = ?;`;
+  async deleteMoment(momentId, userId) {
+    const statement = `DELETE FROM moments WHERE id=? And userId =?`;
     const res = await connection.execute(statement, [momentId, userId]);
+    return res[0];
+  }
+  async updateMoment(userId, momentId, content) {
+    const statement = `UPDATE moments SET content = ? WHERE id = ? AND userId = ?;`;
+    const res = await connection.execute(statement, [
+      content,
+      momentId,
+      userId,
+    ]);
+    return res[0];
   }
 }
 module.exports = new MomentService();

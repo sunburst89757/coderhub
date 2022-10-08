@@ -53,11 +53,11 @@ const verifyAuth = async (ctx, next) => {
     ctx.app.emit("error", err, ctx);
   }
 };
-//  仅仅校验是不是本人操作
-const verifyPermission = async (ctx, next) => {
-  const { momentId } = ctx.params;
+//  仅仅校验是不是本人操作  id必须从params中取 维护restful API
+const verifyPermission = (tableName) => async (ctx, next) => {
+  const { id } = ctx.params;
   const userId = ctx.userId;
-  const result = await authService.checkMoment(momentId, userId);
+  const result = await authService.checkResource(tableName, id, userId);
   if (!result) {
     const error = new Error(UNPERMISSION);
     ctx.app.emit("error", error, ctx);

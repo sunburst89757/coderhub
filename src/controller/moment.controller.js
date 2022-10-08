@@ -19,14 +19,14 @@ class MomentController {
     ctx.body = res;
   }
   async remove(ctx, next) {
-    const { momentId } = ctx.request.params;
-    const res = await service.deleteMoment(momentId);
+    const { id } = ctx.request.params;
+    const res = await service.deleteMoment(id);
     ctx.body = res;
   }
   async update(ctx, next) {
-    const { momentId } = ctx.request.params;
+    const { id } = ctx.request.params;
     const { content } = ctx.request.body;
-    const res = await service.updateMoment(momentId, content);
+    const res = await service.updateMoment(id, content);
     ctx.body = res;
   }
 }

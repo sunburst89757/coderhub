@@ -5,8 +5,10 @@ const {
   PASSWORD_IS_NOT_CORRECT,
   UNAUTHORIZATION,
   USER_DOES_NOT_EXITS,
+  UNPERMISSION,
 } = require("../constants/errorTypes");
-const service = require("../service/user.service");
+const userService = require("../service/user.service");
+const authService = require("../service/auth.service");
 const { md5Password } = require("../utils/handlePassword");
 const verifyLogin = async (ctx, next) => {
   // 1. 获取用户请求数据
@@ -17,7 +19,7 @@ const verifyLogin = async (ctx, next) => {
     return ctx.app.emit("error", error, ctx);
   }
   // 3.验证密码是否正确
-  const res = await service.getUserByUsername(username);
+  const res = await userService.getUserByUsername(username);
   // 验证用户名是否存在
   if (!res.length) {
     const error = new Error(USER_DOES_NOT_EXITS);
@@ -51,8 +53,21 @@ const verifyAuth = async (ctx, next) => {
     ctx.app.emit("error", err, ctx);
   }
 };
+//  仅仅校验是不是本人操作
+const verifyPermission = async (ctx, next) => {
+  const { momentId } = ctx.params;
+  const userId = ctx.userId;
+  const result = await authService.checkMoment(momentId, userId);
+  if (!result) {
+    const error = new Error(UNPERMISSION);
+    ctx.app.emit("error", error, ctx);
+  } else {
+    await next();
+  }
+};
 
 module.exports = {
   verifyLogin,
   verifyAuth,
+  verifyPermission,
 };

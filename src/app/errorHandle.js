@@ -4,6 +4,7 @@ const {
   PASSWORD_IS_NOT_CORRECT,
   UNAUTHORIZATION,
   USER_DOES_NOT_EXITS,
+  UNPERMISSION,
 } = require("../constants/errorTypes");
 const errorHandle = (error, ctx) => {
   let status;
@@ -34,6 +35,11 @@ const errorHandle = (error, ctx) => {
     case USER_DOES_NOT_EXITS: {
       status = 400;
       message = "用户不存在请先注册";
+      break;
+    }
+    case UNPERMISSION: {
+      status = 400;
+      message = "当前用户无权限进行此操作";
       break;
     }
     default: {

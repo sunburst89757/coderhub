@@ -6,23 +6,39 @@ class MomentService {
     console.log(result);
     return result;
   }
-  async getMomentsByUserId(userId) {
-    const statement = `SELECT u.username,m.content FROM moments m LEFT JOIN users u ON m.userId = u.userId WHERE u.userId = ?`;
-    const result = await connection.execute(statement, [userId]);
+  async getMomentById(momentId) {
+    const statement = `SELECT m.id id,m.content content,m.createAt createAt,m.updateAt updateAt,JSON_OBJECT("userId",u.userId,"username",u.username) userInfo FROM moments m LEFT JOIN users u ON m.userId = u.userId WHERE m.id = ?`;
+    const result = await connection.execute(statement, [momentId]);
     return result[0];
+  }
+  async getMomentList(userId, pageNum, pageSize) {
+    const offset = (Number(pageNum) - 1) * Number(pageSize);
+    const statement = `
+    SELECT 
+        m.id id,m.content content,m.createAt createAt,m.updateAt updateAt,
+        JSON_OBJECT("userId",u.userId,"username",u.username) userInfo 
+    FROM moments m 
+    LEFT JOIN users u ON m.userId = u.userId 
+    LIMIT ?, ?;`;
+    //  limit 后面必须接的是字符串
+    try {
+      const result = await connection.execute(statement, [
+        offset.toString(),
+        pageSize,
+      ]);
+      return result[0];
+    } catch (error) {
+      console.log(error);
+    }
   }
   async deleteMoment(momentId, userId) {
     const statement = `DELETE FROM moments WHERE id=? And userId =?`;
     const res = await connection.execute(statement, [momentId, userId]);
     return res[0];
   }
-  async updateMoment(userId, momentId, content) {
-    const statement = `UPDATE moments SET content = ? WHERE id = ? AND userId = ?;`;
-    const res = await connection.execute(statement, [
-      content,
-      momentId,
-      userId,
-    ]);
+  async updateMoment(momentId, content) {
+    const statement = `UPDATE moments SET content = ? WHERE id = ?;`;
+    const res = await connection.execute(statement, [content, momentId]);
     return res[0];
   }
 }

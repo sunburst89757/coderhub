@@ -7,7 +7,18 @@ class MomentService {
     return result;
   }
   async getMomentById(momentId) {
-    const statement = `SELECT m.id id,m.content content,m.createAt createAt,m.updateAt updateAt,JSON_OBJECT("userId",u.userId,"username",u.username) userInfo FROM moments m LEFT JOIN users u ON m.userId = u.userId WHERE m.id = ?`;
+    const statement = `
+    SELECT 
+        m.id id,m.content content,m.createAt createAt,m.updateAt updateAt,
+        JSON_OBJECT("userId",u.userId,"username",u.username) userInfo,
+				JSON_ARRAYAGG(JSON_OBJECT("id",c.id,"commentId",c.commentId,"content",c.content,"commentUser",
+				JSON_OBJECT("userId",cu.userId,"username",cu.username))) comments
+    FROM moments m 
+    LEFT JOIN users u ON m.userId = u.userId
+		LEFT JOIN comments c ON m.id = c.momentId 
+		LEFT JOIN users cu ON c.userId = cu.userId
+    WHERE m.id = ?;
+    `;
     const result = await connection.execute(statement, [momentId]);
     return result[0];
   }
@@ -16,7 +27,8 @@ class MomentService {
     const statement = `
     SELECT 
         m.id id,m.content content,m.createAt createAt,m.updateAt updateAt,
-        JSON_OBJECT("userId",u.userId,"username",u.username) userInfo 
+        JSON_OBJECT("userId",u.userId,"username",u.username) userInfo,
+        (SELECT COUNT(*) FROM comments c WHERE m.id = c.momentId) commentCount 
     FROM moments m 
     LEFT JOIN users u ON m.userId = u.userId 
     LIMIT ?, ?;`;

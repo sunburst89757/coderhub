@@ -44,6 +44,7 @@ const verifyAuth = async (ctx, next) => {
     });
     // 验证登录成功后给后续中间件ctx加上userId
     ctx.userId = res.userId;
+
     await next();
   } catch (error) {
     console.log(error);
